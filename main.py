@@ -20,7 +20,7 @@ try:
     response = client.conversations_history(channel="CTP15QXLZ", oldest=start_of_week)
     print(response['messages'])
     messages = response['messages']
-    messages.sort(key=lambda x: len(x['reactions']), reverse=True)
+    messages.sort(key=lambda x: len(x.get('reactions', [])), reverse=True)
     top_messages = messages[:5]
     print("Les messages ont été récupérés avec succès.")
 except SlackApiError as e:
