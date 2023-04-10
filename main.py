@@ -29,7 +29,9 @@ except SlackApiError as e:
 # Construction du message à envoyer sur Slack
 message = "Les 5 messages les plus réactifs de la semaine dernière dans le canal #troll sont : \n\n"
 for i, msg in enumerate(top_messages):
-    message += f"{i+1}. <{msg['permalink']}|{msg['text']}> ({len(msg['reactions'])} réactions)\n"
+    if 'permalink' in msg and msg['permalink']:
+        message += f"{i+1}. <{msg['permalink']}|{msg['text']}> ({len(msg['reactions'])} réactions)\n"
+
 
 # Envoi du message sur Slack
 try:
