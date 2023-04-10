@@ -25,8 +25,9 @@ except SlackApiError as e:
 reactions_count = {}
 for msg in messages:
     count = 0
-    for reaction in msg['reactions']:
-        count += reaction['count']
+    if 'reactions' in msg:
+        for reaction in msg['reactions']:
+            count += reaction['count']
     reactions_count[msg['ts']] = count
 
 # Tri des messages par nombre total de réactions
@@ -38,7 +39,7 @@ if top_messages:
     for i, msg in enumerate(top_messages):
         response = client.conversations_permalink(channel="CTP15QXLZ", message_ts=msg[0])
         permalink = response['permalink']
-        text = response['message']['text']
+        text = response['message']['text'][:40] + "..." if len(response['message']['text']) > 40 else response['message']['text']
         message += f"{i+1}. {text} ({msg[1]} réactions) : {permalink}\n"
 
     # Envoi du message sur Slack
