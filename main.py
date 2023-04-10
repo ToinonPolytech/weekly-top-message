@@ -18,7 +18,7 @@ client = WebClient(token=slack_api_token)
 start_of_week = (datetime.datetime.now() - datetime.timedelta(days=7)).timestamp()
 try:
     response = client.conversations_history(channel="CTP15QXLZ", oldest=start_of_week)
-    print(response['messages'][0])
+    print(response['messages'][2])
     messages = response['messages']
     messages.sort(key=lambda x: len(x.get('reactions', [])), reverse=True)
     top_messages = messages[:5]
