@@ -3,7 +3,7 @@ from subprocess import call
 
 scheduler = BlockingScheduler()
 
-@scheduler.scheduled_job('cron', day_of_week='mon', hour=17,minute=01)
+@scheduler.scheduled_job('cron', day_of_week='mon', hour=16,minute=12)
 def scheduled_job():
     call(['python', 'main.py'])
 
