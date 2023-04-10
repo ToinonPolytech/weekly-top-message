@@ -9,6 +9,7 @@ load_dotenv()
 
 # Récupération du token d'API Slack depuis la variable d'environnement
 slack_api_token = os.getenv('SLACK_BOT_TOKEN')
+print(slack_api_token)
 
 # Initialisation du client Slack
 client = WebClient(token=slack_api_token)
