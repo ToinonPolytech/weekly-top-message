@@ -28,9 +28,11 @@ if top_messages:
     message = "Les 5 messages les plus réactifs de la semaine dernière dans le canal #troll sont : \n\n"
     for i, msg in enumerate(top_messages):
         text = msg.get('text')
-        permalink = msg.get('permalink')
+        permalink = msg.get('permalink_public')
+	print(permalink)
         count_reactions = len(msg.get('reactions', []))
-        message += f"{i+1}. <{permalink}|{text}> ({count_reactions} réactions)\n"
+        message += f"{i+1}. {text} ({count_reactions} réactions) : {permalink}\n"
+
 
     # Envoi du message sur Slack
     try:
