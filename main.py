@@ -15,10 +15,14 @@ client = WebClient(token=slack_api_token)
 
 # Récupération des 5 messages les plus réactifs de la semaine dernière
 start_of_week = (datetime.datetime.now() - datetime.timedelta(days=7)).timestamp()
-response = client.conversations_history(channel="troll", oldest=start_of_week)
-messages = response['messages']
-messages.sort(key=lambda x: len(x['reactions']), reverse=True)
-top_messages = messages[:5]
+try:
+    response = client.conversations_history(channel="troll", oldest=start_of_week)
+    messages = response['messages']
+    messages.sort(key=lambda x: len(x['reactions']), reverse=True)
+    top_messages = messages[:5]
+    print("Les messages ont été récupérés avec succès.")
+except SlackApiError as e:
+    print("Erreur lors de la récupération des messages : {}".format(e))
 
 # Construction du message à envoyer sur Slack
 message = "Les 5 messages les plus réactifs de la semaine dernière dans le canal #troll sont : \n\n"
@@ -33,4 +37,4 @@ try:
     )
     print("Message envoyé : ", response['ts'])
 except SlackApiError as e:
-    print("Erreur : {}".format(e))
+    print("Erreur lors de l'envoi du message : {}".format(e))
