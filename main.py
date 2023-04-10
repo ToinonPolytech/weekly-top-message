@@ -37,9 +37,8 @@ top_messages = sorted(reactions_count.items(), key=lambda x: x[1], reverse=True)
 if top_messages:
     message = "Les 5 messages ayant reçu le plus de réactions la semaine dernière dans le canal #troll sont : \n\n"
     for i, msg in enumerate(top_messages):
-        response = client.conversations_permalink(channel="CTP15QXLZ", message_ts=msg[0])
-        permalink = response['permalink']
-        text = response['message']['text'][:40] + "..." if len(response['message']['text']) > 40 else response['message']['text']
+        permalink = msg.get('permalink_public')
+        text = msg.get('text')[:40] + "..." if len( msg.get('text')[:40]) > 40 else  msg.get('text')[:40]
         message += f"{i+1}. {text} ({msg[1]} réactions) : {permalink}\n"
 
     # Envoi du message sur Slack
