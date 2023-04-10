@@ -18,7 +18,7 @@ start_of_week = (datetime.datetime.now() - datetime.timedelta(days=7)).timestamp
 try:
     response = client.conversations_history(channel="CTP15QXLZ", oldest=start_of_week)
     messages = response['messages']
-    messages.sort(key=lambda x: sum(r.get('count', 0) for r in x.get('reactions', [])), reverse=True)
+    messages.sort(key=lambda x: len(x.get('reactions', [])), reverse=True)
     top_messages = messages[:5]
 except SlackApiError as e:
     print("Erreur lors de la récupération des messages : {}".format(e))
@@ -27,11 +27,10 @@ except SlackApiError as e:
 if top_messages:
     message = "Les 5 messages les plus réactifs de la semaine dernière dans le canal #troll sont : \n\n"
     for i, msg in enumerate(top_messages):
-        text = msg.get('text')
-        permalink = msg.get('permalink')
-        count_reactions = sum(r.get('count', 0) for r in msg.get('reactions', []))
+        text = msg.get('text')[:40] + '...' if len(msg.get('text')) > 40 else msg.get('text')
+        permalink = msg.get('permalink_public')
+        count_reactions = sum([r['count'] for r in msg.get('reactions', [])])
         message += f"{i+1}. {text} ({count_reactions} réactions) : {permalink}\n"
-        print(f"Permalink du message n°{i+1} : {permalink}")
 
     # Envoi du message sur Slack
     try:
