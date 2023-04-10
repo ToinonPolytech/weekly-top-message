@@ -2,9 +2,16 @@ import os
 import datetime
 from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
+from dotenv import load_dotenv
+
+# Chargement des variables d'environnement depuis le fichier .env
+load_dotenv()
+
+# Récupération du token d'API Slack depuis la variable d'environnement
+slack_api_token = os.getenv('SLACK_API_TOKEN')
 
 # Initialisation du client Slack
-client = WebClient(token=os.environ['xapp-1-A052K8KNA3W-5098006720785-9b0c659a79fc7c663666e05f89de4413da798fa90e0cb994317a10a512c8b684'])
+client = WebClient(token=slack_api_token)
 
 # Récupération des 5 messages les plus réactifs de la semaine dernière
 start_of_week = (datetime.datetime.now() - datetime.timedelta(days=7)).timestamp()
