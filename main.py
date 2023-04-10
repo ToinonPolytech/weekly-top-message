@@ -15,7 +15,7 @@ client = WebClient(token=slack_api_token)
 
 # Récupération des 5 messages les plus réactifs de la semaine dernière
 start_of_week = (datetime.datetime.now() - datetime.timedelta(days=7)).timestamp()
-response = client.conversations_history(channel="#troll", oldest=start_of_week)
+response = client.conversations_history(channel="troll", oldest=start_of_week)
 messages = response['messages']
 messages.sort(key=lambda x: len(x['reactions']), reverse=True)
 top_messages = messages[:5]
@@ -28,7 +28,7 @@ for i, msg in enumerate(top_messages):
 # Envoi du message sur Slack
 try:
     response = client.chat_postMessage(
-        channel="#troll",
+        channel="troll",
         text=message
     )
     print("Message envoyé : ", response['ts'])
