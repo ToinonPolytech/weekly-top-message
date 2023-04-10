@@ -9,7 +9,6 @@ load_dotenv()
 
 # Récupération du token d'API Slack depuis la variable d'environnement
 slack_api_token = os.getenv('SLACK_BOT_TOKEN')
-print(slack_api_token)
 
 # Initialisation du client Slack
 client = WebClient(token=slack_api_token)
@@ -18,27 +17,29 @@ client = WebClient(token=slack_api_token)
 start_of_week = (datetime.datetime.now() - datetime.timedelta(days=7)).timestamp()
 try:
     response = client.conversations_history(channel="CTP15QXLZ", oldest=start_of_week)
-    print(response['messages'][2])
     messages = response['messages']
     messages.sort(key=lambda x: len(x.get('reactions', [])), reverse=True)
     top_messages = messages[:5]
-    print("Les messages ont été récupérés avec succès.")
 except SlackApiError as e:
     print("Erreur lors de la récupération des messages : {}".format(e))
 
 # Construction du message à envoyer sur Slack
-message = "Les 5 messages les plus réactifs de la semaine dernière dans le canal #troll sont : \n\n"
-for i, msg in enumerate(top_messages):
-    if 'permalink' in msg and msg['permalink']:
-        message += f"{i+1}. <{msg['permalink']}|{msg['text']}> ({len(msg['reactions'])} réactions)\n"
+if top_messages:
+    message = "Les 5 messages les plus réactifs de la semaine dernière dans le canal #troll sont : \n\n"
+    for i, msg in enumerate(top_messages):
+        text = msg.get('text')
+        permalink = msg.get('permalink')
+        count_reactions = len(msg.get('reactions', []))
+        message += f"{i+1}. <{permalink}|{text}> ({count_reactions} réactions)\n"
 
-
-# Envoi du message sur Slack
-try:
-    response = client.chat_postMessage(
-        channel="CTP15QXLZ",
-        text=message
-    )
-    print("Message envoyé : ", response['ts'])
-except SlackApiError as e:
-    print("Erreur lors de l'envoi du message : {}".format(e))
+    # Envoi du message sur Slack
+    try:
+        response = client.chat_postMessage(
+            channel="CTP15QXLZ",
+            text=message
+        )
+        print("Message envoyé : ", response['ts'])
+    except SlackApiError as e:
+        print("Erreur lors de l'envoi du message : {}".format(e))
+else:
+    print("Aucun message trouvé dans le canal #troll.")
